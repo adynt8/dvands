@@ -4,7 +4,7 @@ This guide covers deploying the Discord Portal with bot integration to productio
 
 ## Prerequisites
 
-- Node.js 16.9.0 or higher
+- Node.js 18.0.0 or higher
 - npm or yarn
 - Discord bot configured (see [BOT_SETUP.md](BOT_SETUP.md))
 - A hosting platform account
