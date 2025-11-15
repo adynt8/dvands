@@ -131,14 +131,20 @@ Then open your browser and navigate to `http://localhost:3000`
 
 ### 4. Deploy to Production
 
-You can deploy this to any static hosting service:
+**For complete deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)**
 
-- **GitHub Pages**: Push to a repository and enable GitHub Pages
-- **Netlify**: Drag and drop the folder or connect your repository
-- **Vercel**: Import your repository
-- **Cloudflare Pages**: Connect your repository
+The bot requires a Node.js backend, so deploy to platforms that support Node.js:
 
-**Important**: Don't forget to update the `REDIRECT_URI` in your Discord application settings and `config.js` to match your production URL!
+- **Heroku**: Easy deployment with free tier
+- **Railway**: Auto-deploys from GitHub
+- **DigitalOcean App Platform**: Managed platform with simple setup
+- **AWS EC2**: Full control with more configuration
+- **Google Cloud Run**: Serverless container deployment
+
+**Important**: 
+- Update `REDIRECT_URI` in your Discord application and `public/config.js` to match your production URL
+- Set environment variables (BOT_TOKEN, GUILD_ID) on your hosting platform
+- Configure `API_URL` in `public/config.js` to point to your production backend
 
 ## Usage
 
