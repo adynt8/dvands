@@ -14,8 +14,9 @@ const bot = new DiscordBot();
 app.use(cors());
 app.use(express.json());
 
-// Serve static files
-app.use(express.static('.'));
+// Serve static files from public directory only (prevents exposure of sensitive files)
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

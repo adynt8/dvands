@@ -38,10 +38,10 @@ This guide will walk you through setting up the Discord OAuth verification porta
 
 1. In the portal files, copy `config.example.js` to `config.js`:
    ```bash
-   cp config.example.js config.js
+   cp public/config.example.js public/config.js
    ```
 
-2. Open `config.js` in a text editor
+2. Open `public/config.js` in a text editor
 
 3. Replace the placeholder values:
    ```javascript
@@ -145,8 +145,8 @@ php -S localhost:8000
 ## Troubleshooting
 
 ### "Discord configuration is missing"
-- Make sure you created `config.js` from `config.example.js`
-- Check that `config.js` is in the same directory as `index.html`
+- Make sure you created `public/config.js` from `public/config.example.js`
+- Check that `public/config.js` exists in the public directory
 
 ### OAuth redirect not working
 - Ensure `REDIRECT_URI` in `config.js` **exactly** matches the one in Discord Developer Portal

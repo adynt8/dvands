@@ -44,8 +44,8 @@ A client-side Discord OAuth verification portal that allows users to verify thei
 
 5. Configure the portal:
    ```bash
-   cp config.example.js config.js
-   # Edit config.js with your Discord application details
+   cp public/config.example.js public/config.js
+   # Edit public/config.js with your Discord application details
    ```
 
 6. Start the server:
@@ -78,12 +78,12 @@ Quick steps:
 
 ### 3. Configure the Portal
 
-1. Copy `config.example.js` to `config.js`:
+1. Copy `config.example.js` to `config.js` in the public directory:
    ```bash
-   cp config.example.js config.js
+   cp public/config.example.js public/config.js
    ```
 
-2. Edit `config.js` with your Discord application details:
+2. Edit `public/config.js` with your Discord application details:
    ```javascript
    window.DISCORD_CONFIG = {
        CLIENT_ID: 'your_client_id_here',
@@ -178,18 +178,19 @@ With the integrated Discord bot, the portal now provides:
 ## File Structure
 
 ```
-├── index.html           # Main HTML page
-├── styles.css          # Styling
-├── client.js           # Frontend application logic
-├── server.js           # Backend Express server
-├── bot.js              # Discord bot implementation
-├── config.example.js   # Frontend configuration template
-├── config.js           # Your frontend configuration (gitignored)
-├── .env.example        # Backend environment template
-├── .env                # Your backend configuration (gitignored)
-├── package.json        # Node.js dependencies
-├── README.md           # This file
-└── BOT_SETUP.md        # Detailed bot setup guide
+├── public/
+│   ├── index.html           # Main HTML page
+│   ├── styles.css          # Styling
+│   ├── client.js           # Frontend application logic
+│   ├── config.example.js   # Frontend configuration template
+│   └── config.js           # Your frontend configuration (gitignored)
+├── server.js               # Backend Express server
+├── bot.js                  # Discord bot implementation
+├── .env.example            # Backend environment template
+├── .env                    # Your backend configuration (gitignored)
+├── package.json            # Node.js dependencies
+├── README.md               # This file
+└── BOT_SETUP.md            # Detailed bot setup guide
 ```
 
 ## OAuth Scopes Used
