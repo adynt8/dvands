@@ -1,0 +1,239 @@
+:root {
+    --discord-blurple: #5865F2;
+    --discord-dark: #23272A;
+    --discord-gray: #2C2F33;
+    --discord-light-gray: #99AAB5;
+    --discord-white: #FFFFFF;
+    --success-green: #43B581;
+    --error-red: #F04747;
+    --warning-yellow: #FAA61A;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--discord-dark) 0%, var(--discord-gray) 100%);
+    color: var(--discord-white);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, var(--discord-blurple) 0%, #7289DA 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.tagline {
+    font-size: 1.2rem;
+    color: var(--discord-light-gray);
+}
+
+.section {
+    margin: 20px 0;
+}
+
+.section.hidden {
+    display: none;
+}
+
+.card {
+    background: var(--discord-gray);
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card h2, .card h3 {
+    margin-bottom: 15px;
+    color: var(--discord-white);
+}
+
+.card p {
+    color: var(--discord-light-gray);
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.btn-primary {
+    background: var(--discord-blurple);
+    color: var(--discord-white);
+}
+
+.btn-primary:hover {
+    background: #4752C4;
+}
+
+.btn-secondary {
+    background: var(--discord-dark);
+    color: var(--discord-white);
+}
+
+.btn-secondary:hover {
+    background: #1e2124;
+}
+
+.btn-success {
+    background: var(--success-green);
+    color: var(--discord-white);
+}
+
+.btn-danger {
+    background: var(--error-red);
+    color: var(--discord-white);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 4px solid var(--discord-blurple);
+}
+
+.user-info div {
+    flex: 1;
+}
+
+.user-id {
+    font-size: 0.9rem;
+    color: var(--discord-light-gray);
+}
+
+.status-box {
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+.status-box.success {
+    background: rgba(67, 181, 129, 0.2);
+    border: 2px solid var(--success-green);
+}
+
+.status-box.warning {
+    background: rgba(250, 166, 26, 0.2);
+    border: 2px solid var(--warning-yellow);
+}
+
+.status-box.error {
+    background: rgba(240, 71, 71, 0.2);
+    border: 2px solid var(--error-red);
+}
+
+.role-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    margin: 8px 0;
+    background: var(--discord-dark);
+    border-radius: 8px;
+    border-left: 4px solid var(--discord-blurple);
+}
+
+.role-name {
+    font-weight: 600;
+}
+
+.role-color {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.loading {
+    text-align: center;
+    color: var(--discord-light-gray);
+    padding: 20px;
+}
+
+.info-text {
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+}
+
+.error {
+    border: 2px solid var(--error-red);
+}
+
+#login-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 1.1rem;
+    padding: 16px;
+}
+
+@media (max-width: 600px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .user-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .card {
+        padding: 20px;
+    }
+}
