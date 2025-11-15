@@ -18,6 +18,11 @@ window.DISCORD_CONFIG = {
     // Optional: Discord server invite link (for manual joining)
     INVITE_LINK: 'https://discord.gg/RB2UZeK9SX',
     
+    // Backend API URL (for bot integration)
+    // For local development: 'http://localhost:3000/api'
+    // For production: 'https://your-backend-url.com/api'
+    API_URL: 'http://localhost:3000/api',
+    
     // Optional: List of self-assignable roles
     // Note: Actual role assignment requires a bot with server-side implementation
     // This is for display purposes to show what roles would be available

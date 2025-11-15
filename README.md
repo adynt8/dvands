@@ -4,101 +4,175 @@ A client-side Discord OAuth verification portal that allows users to verify thei
 
 ## Features
 
-- 🔐 Discord OAuth 2.0 authentication (client-side)
+- 🔐 Discord OAuth 2.0 authentication
 - ✅ Server membership verification
 - 👤 User profile display
-- 📋 Role display (with server-side limitations noted)
+- 🤖 **Discord Bot integration for role management**
+- 📋 Real-time role display and assignment
+- ➕ Auto-join server functionality
 - 🎨 Modern, responsive UI
-- 🚀 No server-side code required for basic functionality
+- 🚀 Backend server with Express and Discord.js
 
-## Setup Instructions
+## Quick Start
+
+### Prerequisites
+
+- Node.js (version 16.9.0 or higher)
+- npm (comes with Node.js)
+- Discord account with admin permissions on your server
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/dvands.git
+   cd dvands
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up your Discord application and bot (see detailed guides below)
+
+4. Configure environment variables:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your bot token and guild ID
+   ```
+
+5. Configure the portal:
+   ```bash
+   cp public/config.example.js public/config.js
+   # Edit public/config.js with your Discord application details
+   ```
+
+6. Start the server:
+   ```bash
+   npm start
+   ```
+
+7. Open your browser and navigate to `http://localhost:3000`
+
+## Detailed Setup Instructions
 
 ### 1. Create a Discord Application
 
 1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
 2. Click "New Application" and give it a name
 3. Navigate to the "OAuth2" section
-4. Add your redirect URI (e.g., `http://localhost:8000/` or your domain)
+4. Add your redirect URI (e.g., `http://localhost:3000/` for local development)
 5. Note down your **Client ID**
 
-### 2. Configure the Portal
+### 2. Set Up the Discord Bot
 
-1. Copy `config.example.js` to `config.js`:
+**For complete bot setup instructions, see [BOT_SETUP.md](BOT_SETUP.md)**
+
+Quick steps:
+1. In your Discord application, go to the "Bot" section
+2. Click "Add Bot"
+3. Enable "Server Members Intent"
+4. Copy your bot token
+5. Invite the bot to your server with "Manage Roles" permission
+
+### 3. Configure the Portal
+
+1. Copy `config.example.js` to `config.js` in the public directory:
    ```bash
-   cp config.example.js config.js
+   cp public/config.example.js public/config.js
    ```
 
-2. Edit `config.js` with your Discord application details:
+2. Edit `public/config.js` with your Discord application details:
    ```javascript
    window.DISCORD_CONFIG = {
        CLIENT_ID: 'your_client_id_here',
-       REDIRECT_URI: 'http://localhost:8000/',
+       REDIRECT_URI: 'http://localhost:3000/',
        GUILD_ID: 'your_server_id_here',
        INVITE_LINK: 'https://discord.gg/your_invite',
+       API_URL: 'http://localhost:3000/api',
        SELF_ASSIGNABLE_ROLES: [...]
    };
    ```
 
-3. Get your Guild (Server) ID:
+3. Copy `.env.example` to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+
+4. Edit `.env` with your bot token:
+   ```env
+   BOT_TOKEN=your_bot_token_here
+   GUILD_ID=your_guild_id_here
+   PORT=3000
+   ```
+
+5. Get your Guild (Server) ID:
    - Enable Developer Mode in Discord (User Settings > Advanced > Developer Mode)
    - Right-click your server icon and select "Copy ID"
 
 ### 3. Run the Portal
 
-Since this is a static site, you can use any web server. Here are some options:
+Start the Node.js server with the integrated bot:
 
-**Option 1: Python**
 ```bash
-# Python 3
-python -m http.server 8000
-
-# Python 2
-python -m SimpleHTTPServer 8000
+npm start
 ```
 
-**Option 2: Node.js (npx)**
-```bash
-npx http-server -p 8000
-```
+The server will:
+- Start the Express backend on port 3000 (or your configured PORT)
+- Connect the Discord bot
+- Serve the static frontend files
+- Provide API endpoints for role management
 
-**Option 3: PHP**
-```bash
-php -S localhost:8000
-```
+Then open your browser and navigate to `http://localhost:3000`
 
-Then open your browser and navigate to `http://localhost:8000`
+**Note:** The old static-only hosting methods (Python, PHP) will only show the frontend without bot functionality.
 
 ### 4. Deploy to Production
 
-You can deploy this to any static hosting service:
+**For complete deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)**
 
-- **GitHub Pages**: Push to a repository and enable GitHub Pages
-- **Netlify**: Drag and drop the folder or connect your repository
-- **Vercel**: Import your repository
-- **Cloudflare Pages**: Connect your repository
+The bot requires a Node.js backend, so deploy to platforms that support Node.js:
 
-**Important**: Don't forget to update the `REDIRECT_URI` in your Discord application settings and `config.js` to match your production URL!
+- **Heroku**: Easy deployment with free tier
+- **Railway**: Auto-deploys from GitHub
+- **DigitalOcean App Platform**: Managed platform with simple setup
+- **AWS EC2**: Full control with more configuration
+- **Google Cloud Run**: Serverless container deployment
+
+**Important**: 
+- Update `REDIRECT_URI` in your Discord application and `public/config.js` to match your production URL
+- Set environment variables (BOT_TOKEN, GUILD_ID) on your hosting platform
+- Configure `API_URL` in `public/config.js` to point to your production backend
 
 ## Usage
 
 1. **Login**: Click "Login with Discord" to authenticate
 2. **Verification**: Check your server membership status
-3. **Roles**: View available roles (display only with client-side OAuth)
+3. **Join Server**: Automatically join the server with one click (via bot)
+4. **View Roles**: See your current roles in the server
+5. **Manage Roles**: Assign or remove self-assignable roles
+6. **Logout**: Clear your session when done
 
-## Limitations (Client-Side OAuth)
+## Features in Detail
 
-Due to client-side OAuth limitations, the following features require server-side implementation:
+### ✅ Full Role Management
 
-- **Joining Server**: Cannot automatically add users to server (requires bot)
-- **Role Assignment**: Cannot modify user roles (requires bot with Manage Roles permission)
-- **Detailed Role Info**: Cannot fetch specific member roles (requires bot)
+With the integrated Discord bot, the portal now provides:
 
-### Recommended Server-Side Enhancement
+- **Real-time Role Display**: See your actual roles from the server
+- **Role Assignment**: Assign yourself allowed roles with one click
+- **Role Removal**: Remove roles you no longer want
+- **Auto-Join**: Join the server directly through the portal
+- **Member Verification**: Automatic verification when you join
 
-For full functionality, consider implementing a backend service with:
-- Discord Bot with proper permissions
-- REST API endpoints for role management
-- Bot token stored securely server-side
+### 🔐 Secure Backend
+
+- Bot token stored securely in environment variables
+- API endpoints protected and validated
+- CORS enabled for secure cross-origin requests
+- No sensitive data exposed to the client
 
 ## Security Notes
 
@@ -110,12 +184,19 @@ For full functionality, consider implementing a backend service with:
 ## File Structure
 
 ```
-├── index.html           # Main HTML page
-├── styles.css          # Styling
-├── app.js              # Application logic
-├── config.example.js   # Configuration template
-├── config.js           # Your configuration (gitignored)
-└── README.md           # This file
+├── public/
+│   ├── index.html           # Main HTML page
+│   ├── styles.css          # Styling
+│   ├── client.js           # Frontend application logic
+│   ├── config.example.js   # Frontend configuration template
+│   └── config.js           # Your frontend configuration (gitignored)
+├── server.js               # Backend Express server
+├── bot.js                  # Discord bot implementation
+├── .env.example            # Backend environment template
+├── .env                    # Your backend configuration (gitignored)
+├── package.json            # Node.js dependencies
+├── README.md               # This file
+└── BOT_SETUP.md            # Detailed bot setup guide
 ```
 
 ## OAuth Scopes Used
@@ -136,8 +217,16 @@ For full functionality, consider implementing a backend service with:
 **Issue**: "Your session has expired"
 - Solution: Click login again to re-authenticate
 
-**Issue**: Role assignment doesn't work
-- Solution: This is expected! Client-side OAuth cannot modify roles. Implement a bot for this feature.
+**Issue**: "Bot is not ready yet"
+- Solution: Wait a few seconds for the bot to connect, check your `.env` file has correct BOT_TOKEN
+
+**Issue**: Role assignment fails
+- Solution: Ensure the bot's role is higher than the roles it's trying to manage in Discord's role hierarchy
+
+**Issue**: Cannot connect to API
+- Solution: Make sure the server is running (`npm start`) and `API_URL` in `config.js` is correct
+
+For more troubleshooting, see [BOT_SETUP.md](BOT_SETUP.md)
 
 ## Contributing
 

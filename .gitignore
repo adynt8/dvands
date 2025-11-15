@@ -3,6 +3,8 @@ node_modules/
 
 # Environment and config files with secrets
 config.js
+public/config.js
+.env
 
 # Build artifacts
 dist/
