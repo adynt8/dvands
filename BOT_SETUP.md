@@ -4,7 +4,7 @@ This guide will help you set up the Discord bot required for role management fun
 
 ## Prerequisites
 
-- Node.js (version 16.9.0 or higher)
+- Node.js (version 18.0.0 or higher)
 - npm (comes with Node.js)
 - A Discord account with admin permissions on your server
 - Discord Application with OAuth2 configured (from main setup)

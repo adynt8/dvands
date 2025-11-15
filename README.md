@@ -17,7 +17,7 @@ A client-side Discord OAuth verification portal that allows users to verify thei
 
 ### Prerequisites
 
-- Node.js (version 16.9.0 or higher)
+- Node.js (version 18.0.0 or higher)
 - npm (comes with Node.js)
 - Discord account with admin permissions on your server
 
