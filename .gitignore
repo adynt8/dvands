@@ -3,6 +3,7 @@ node_modules/
 
 # Environment and config files with secrets
 config.js
+.env
 
 # Build artifacts
 dist/

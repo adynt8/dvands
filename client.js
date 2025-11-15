@@ -5,6 +5,7 @@ class DiscordPortal {
         this.config = window.DISCORD_CONFIG || {};
         this.accessToken = null;
         this.user = null;
+        this.apiUrl = this.config.API_URL || 'http://localhost:3000/api';
         this.init();
     }
 
@@ -190,70 +191,173 @@ class DiscordPortal {
         const verifyBtn = document.getElementById('verify-btn');
 
         statusBox.className = 'status-box';
-        statusBox.innerHTML = '<p>⏳ Note: Joining server requires a bot with proper permissions on the server side.</p><p>This is a client-side limitation. Please use the Discord invite link or contact an administrator.</p>';
+        statusBox.innerHTML = '<p>⏳ Attempting to add you to the server...</p>';
         
-        // Client-side OAuth cannot directly add users to guilds
-        // This requires a bot with server-side implementation
-        if (this.config.INVITE_LINK) {
-            statusBox.innerHTML += `<p><a href="${this.config.INVITE_LINK}" target="_blank" class="btn btn-primary" style="margin-top: 10px;">Open Invite Link</a></p>`;
+        try {
+            const response = await fetch(`${this.apiUrl}/user/${this.user.id}/join`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    accessToken: this.accessToken
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                statusBox.className = 'status-box success';
+                statusBox.innerHTML = '<p>✅ Successfully joined the server!</p>';
+                verifyBtn.classList.add('hidden');
+                // Reload roles
+                await this.loadUserRoles();
+            } else {
+                throw new Error(data.message || 'Failed to join server');
+            }
+        } catch (error) {
+            console.error('Error joining server:', error);
+            statusBox.className = 'status-box error';
+            statusBox.innerHTML = `<p>❌ Failed to join server: ${error.message}</p>`;
+            
+            if (this.config.INVITE_LINK) {
+                statusBox.innerHTML += `<p><a href="${this.config.INVITE_LINK}" target="_blank" class="btn btn-primary" style="margin-top: 10px;">Use Invite Link Instead</a></p>`;
+            }
         }
     }
 
     async loadUserRoles() {
         const container = document.getElementById('roles-container');
         
-        if (!this.config.GUILD_ID) {
-            container.innerHTML = '<p class="info-text">Server ID not configured.</p>';
+        if (!this.user || !this.user.id) {
+            container.innerHTML = '<p class="info-text">User not loaded.</p>';
             return;
         }
 
-        // Note: Getting member roles requires bot permissions
-        // Client-side OAuth has limitations here
-        container.innerHTML = `
-            <p class="info-text">⚠️ Role information requires server-side implementation with a bot.</p>
-            <p class="info-text">Current OAuth scopes allow reading guild membership but not specific role details.</p>
-            <div class="role-item">
-                <span><span class="role-color" style="background: #5865F2;"></span><span class="role-name">@everyone</span></span>
-            </div>
-        `;
+        try {
+            const response = await fetch(`${this.apiUrl}/user/${this.user.id}/roles`);
+            
+            if (response.status === 404) {
+                container.innerHTML = '<p class="info-text">You are not a member of the server yet.</p>';
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch roles');
+            }
+
+            const data = await response.json();
+            const roles = data.roles || [];
+
+            if (roles.length === 0) {
+                container.innerHTML = `
+                    <div class="role-item">
+                        <span><span class="role-color" style="background: #5865F2;"></span><span class="role-name">@everyone</span></span>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = '';
+                roles.forEach(role => {
+                    const roleDiv = document.createElement('div');
+                    roleDiv.className = 'role-item';
+                    roleDiv.innerHTML = `
+                        <span>
+                            <span class="role-color" style="background: ${role.color || '#99AAB5'};"></span>
+                            <span class="role-name">${role.name}</span>
+                        </span>
+                    `;
+                    container.appendChild(roleDiv);
+                });
+            }
+        } catch (error) {
+            console.error('Error loading user roles:', error);
+            container.innerHTML = '<p class="info-text error">⚠️ Failed to load roles from server.</p>';
+        }
     }
 
     async loadAvailableRoles() {
         const container = document.getElementById('available-roles-container');
 
-        // Display configured self-assignable roles
-        const availableRoles = this.config.SELF_ASSIGNABLE_ROLES || [];
+        try {
+            const response = await fetch(`${this.apiUrl}/roles`);
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch available roles');
+            }
 
-        if (availableRoles.length === 0) {
-            container.innerHTML = '<p class="info-text">No self-assignable roles configured.</p>';
-            return;
+            const data = await response.json();
+            const roles = data.roles || [];
+
+            if (roles.length === 0) {
+                container.innerHTML = '<p class="info-text">No self-assignable roles available.</p>';
+                return;
+            }
+
+            // Get user's current roles
+            const userRolesResponse = await fetch(`${this.apiUrl}/user/${this.user.id}/roles`);
+            let userRoleIds = [];
+            
+            if (userRolesResponse.ok) {
+                const userRolesData = await userRolesResponse.json();
+                userRoleIds = (userRolesData.roles || []).map(r => r.id);
+            }
+
+            container.innerHTML = '';
+            
+            // Filter roles based on config if SELF_ASSIGNABLE_ROLES is defined
+            const allowedRoleIds = this.config.SELF_ASSIGNABLE_ROLES?.map(r => r.id) || [];
+            const displayRoles = allowedRoleIds.length > 0 
+                ? roles.filter(role => allowedRoleIds.includes(role.id))
+                : roles;
+
+            if (displayRoles.length === 0) {
+                container.innerHTML = '<p class="info-text">No self-assignable roles configured.</p>';
+                return;
+            }
+
+            displayRoles.forEach(role => {
+                const hasRole = userRoleIds.includes(role.id);
+                const roleDiv = document.createElement('div');
+                roleDiv.className = 'role-item';
+                roleDiv.innerHTML = `
+                    <span>
+                        <span class="role-color" style="background: ${role.color || '#99AAB5'};"></span>
+                        <span class="role-name">${role.name}</span>
+                    </span>
+                    <button class="btn btn-${hasRole ? 'secondary' : 'primary'} btn-sm" onclick="portal.toggleRole('${role.id}', ${hasRole})">
+                        ${hasRole ? 'Remove' : 'Assign'}
+                    </button>
+                `;
+                container.appendChild(roleDiv);
+            });
+        } catch (error) {
+            console.error('Error loading available roles:', error);
+            container.innerHTML = '<p class="info-text error">⚠️ Failed to load available roles from server.</p>';
         }
-
-        container.innerHTML = '';
-        availableRoles.forEach(role => {
-            const roleDiv = document.createElement('div');
-            roleDiv.className = 'role-item';
-            roleDiv.innerHTML = `
-                <span>
-                    <span class="role-color" style="background: ${role.color || '#99AAB5'};"></span>
-                    <span class="role-name">${role.name}</span>
-                </span>
-                <button class="btn btn-primary btn-sm" onclick="portal.toggleRole('${role.id}')" disabled>
-                    Assign
-                </button>
-            `;
-            container.appendChild(roleDiv);
-        });
-
-        const note = document.createElement('p');
-        note.className = 'info-text';
-        note.style.marginTop = '15px';
-        note.textContent = '⚠️ Role assignment requires a bot with server-side implementation. Client-side OAuth cannot modify roles directly.';
-        container.appendChild(note);
     }
 
-    async toggleRole(roleId) {
-        alert('Role assignment requires server-side implementation with a Discord bot. This functionality is limited by client-side OAuth capabilities.');
+    async toggleRole(roleId, hasRole) {
+        try {
+            const method = hasRole ? 'DELETE' : 'POST';
+            const response = await fetch(`${this.apiUrl}/user/${this.user.id}/roles/${roleId}`, {
+                method: method
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to update role');
+            }
+
+            const result = await response.json();
+            alert(result.message || (hasRole ? 'Role removed successfully!' : 'Role assigned successfully!'));
+            
+            // Reload roles
+            await this.loadUserRoles();
+            await this.loadAvailableRoles();
+        } catch (error) {
+            console.error('Error toggling role:', error);
+            alert(`Failed to ${hasRole ? 'remove' : 'assign'} role: ${error.message}`);
+        }
     }
 }
 
