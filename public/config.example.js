@@ -9,7 +9,7 @@ window.DISCORD_CONFIG = {
     // The redirect URI configured in your Discord application
     // This should match the URL where you're hosting this portal
     // Example: 'https://yourdomain.com/' or 'http://localhost:8000/'
-    REDIRECT_URI: 'https://adynt8.github.io/dvands',
+    REDIRECT_URI: 'https://halcyon.ronanhayes.net',
     
     // Your Discord Server (Guild) ID
     // Enable Developer Mode in Discord, right-click your server, and click "Copy ID"
@@ -21,7 +21,7 @@ window.DISCORD_CONFIG = {
     // Backend API URL (for bot integration)
     // For local development: 'http://localhost:3000/api'
     // For production: 'https://your-backend-url.com/api'
-    API_URL: 'http://localhost:3000/api',
+    API_URL: 'https://halcyon.ronanhayes.net/api',
     
     // Optional: List of self-assignable roles
     // Note: Actual role assignment requires a bot with server-side implementation
